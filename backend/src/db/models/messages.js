@@ -35,7 +35,7 @@ module.exports = (sequelize,DataTypes) =>{
     },{
       sequelize,
       modelName:'messages',
-      paranoid:true,
+      // paranoid:true,
     }
   )
   return Messages ;
