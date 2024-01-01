@@ -15,7 +15,7 @@ class ChatroomRouter {
 
   initializeRoutes = () => {
     this.router.get(`${this.path}/`, this.controller.list);
-    // this.router.get(`${this.path}/:id`, this.controller.get);
+    this.router.get(`${this.path}/:userId`, this.controller.listChatByUser);
     // this.router.get(`${this.path}/`, this.controller.list);
     // this.router.post(`${this.path}/`, this.controller.add);
     // this.router.put(`${this.path}/:id`, this.controller.edit);

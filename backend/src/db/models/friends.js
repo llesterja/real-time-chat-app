@@ -3,7 +3,8 @@ const {Model,DataTypes} = require('sequelize');
 module.exports = (sequelize,DataTypes) =>{
   class Friends extends Model{
     static associate(models){
-      this.belongsTo(models.users);
+      this.belongsTo(models.users, { foreignKey: 'userId', as: 'user' });
+      this.belongsTo(models.users, { foreignKey: 'friendId', as: 'friend' });
     }
   }
   Friends.init(
@@ -21,13 +22,20 @@ module.exports = (sequelize,DataTypes) =>{
         },
         type: DataTypes.INTEGER,
       },
+      friendId: {
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        type: DataTypes.INTEGER,
+      },
       createdAt: { type: DataTypes.DATE },
       updatedAt: { type: DataTypes.DATE },
 
     },{
       sequelize,
       modelName:'friends',
-      paranoid:true,
+      paranoid:false,
     }
   )
   return Friends ;

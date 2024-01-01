@@ -1,11 +1,32 @@
 import ChatroomModel from '../db/models/chatrooms';
+import UserModel from '../db/models/users';
+import UserChatroomModel from '../db/models/userChatrooms';
 
 class ChatroomService {
   constructor(){
     this.chatroomModel = ChatroomModel;
+    this.userModel = UserModel;
+    this.userChatroomModel = UserChatroomModel;
   }
   async listChatByUser(userId){
-       
+     try{
+      const rooms = await this.chatroomModel.findAll({
+        include:[
+          {
+            model: this.userModel,
+            through:{
+              model:this.userChatroomModel,
+              where:{userId:userId}
+            }
+          }
+        ]
+      });
+
+      res.status(200).json(rooms);
+    }catch (err) {
+      console.error(err);
+      throw new Error(err);
+    }    
   }
   
   async joinChatByName(roomName){
