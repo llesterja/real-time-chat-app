@@ -1,18 +1,24 @@
 import React, { useState } from 'react'
 import { Button, Modal, Form } from 'react-bootstrap'
-import {useContacts} from '../contexts/ContactsProvider'
-import {useConversations} from '../contexts/ConversationsProvider'
+import { useContacts } from '../contexts/ContactsProvider'
+import { useConversations } from '../contexts/ConversationsProvider'
 
 
 
-export default function NewConversationModal({closeModal}) {
+export default function NewConversationModal({ closeModal }) {
   const [selectedContactIds, setSelectedContactIds] = useState([])
   const { contacts } = useContacts()
   const { createConversation } = useConversations()
 
   function handleSubmit(e) {
     e.preventDefault()
-    
+
+      // Check if selectedContactIds is not empty
+      if (selectedContactIds.length === 0) {
+        console.error('Please select at least one contact');
+        return;
+      }
+ 
     createConversation(selectedContactIds)
     closeModal()
   }
@@ -28,7 +34,7 @@ export default function NewConversationModal({closeModal}) {
       }
     })
   }
-  
+
   return (
     <div>
       <Modal.Header closeButton>  Create Conversation </Modal.Header>
