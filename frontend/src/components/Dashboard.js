@@ -11,8 +11,8 @@ export default function Dashboard({ id }) {
     <div className="d-flex" style={{ height: '100vh' }}>
       <Sidebar id={id}/>
       {/**Selected Conversation not working correctly */}
-      {/* {selectedConversation && <OpenConversation/>} */}
-      {<OpenConversation/>}
+      {selectedConversation && <OpenConversation/>}
+      {/* {<OpenConversation/>} */}
     </div>
   )
 }

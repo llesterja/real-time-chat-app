@@ -17,6 +17,8 @@ export function ConversationsProvider({id, children}) {
   
   // appending contact
   function createConversation(recipients) {
+    console.log('recipients:')
+    console.log(recipients)
     setConversations(prevConversations => {
       return [...prevConversations, {recipients, messages:[]} ]
     })
@@ -83,16 +85,17 @@ export function ConversationsProvider({id, children}) {
     })
 
     const selected = index === selectedConversationIndex
-    return { ...conversation, recipients, selected}
+    return { ...conversation, messages, recipients, selected}
   })
 
   const value = {
     conversations: formattedConversations,
     selectedConversation: formattedConversations[selectedConversationIndex],
     sendMessage,
-    selectedConversationIndex: setSelectedConversationIndex,
+    selectConversationIndex: setSelectedConversationIndex,
     createConversation
   }
+
 
   return (
     <ConversationsContext.Provider value={value}>

@@ -43,6 +43,9 @@ export default function Sidebar({ id }) {
                 <div className="p-2 border-top border-right small">
                     Your Id: <span className="text-muted">{id}</span>
                 </div>
+                <div>
+                    <Contacts></Contacts>
+                </div>
                 <Button onClick={()=> setModalOpen(true)} className="rounded-0">
                     New {conversationOpen ? 'Conversation' : 'Contact'}
                 </Button>

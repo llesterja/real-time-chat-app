@@ -10,6 +10,9 @@ export default function Conversations() {
       return null; // or render some loading indicator or default content
     }
   
+    console.log("Conversations")
+    console.log(conversations)
+
   return (
     <ListGroup variant="flush">
     {conversations.map((conversation, index) => (
@@ -19,7 +22,7 @@ export default function Conversations() {
           onClick={() => selectConversationIndex(index)}
           active={conversation.selected}
         >
-          {conversation.recipient.map(r => r.name).join('')}
+          {conversation.recipients.map(r => r.name).join(',')}
       </ListGroup.Item>
     ))}
   </ListGroup>

@@ -3,8 +3,6 @@ import { Button, Modal, Form } from 'react-bootstrap'
 import { useContacts } from '../contexts/ContactsProvider'
 import { useConversations } from '../contexts/ConversationsProvider'
 
-
-
 export default function NewConversationModal({ closeModal }) {
   const [selectedContactIds, setSelectedContactIds] = useState([])
   const { contacts } = useContacts()
@@ -12,6 +10,8 @@ export default function NewConversationModal({ closeModal }) {
 
   function handleSubmit(e) {
     e.preventDefault()
+    console.log('Selected Contacts Ids')  
+    console.log(selectedContactIds)
 
       // Check if selectedContactIds is not empty
       if (selectedContactIds.length === 0) {
