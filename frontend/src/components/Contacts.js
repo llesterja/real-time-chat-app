@@ -4,13 +4,9 @@ import { useContacts } from '../contexts/ContactsProvider';
 
 export default function Contacts() {
     const {contacts} = useContacts()
-    console.log("contacts: ", contacts)
-    contacts.map(contact => (
-      console.log("inner log: ",contact)
-    ))
 
     return (
-        <ListGroup>
+        <ListGroup variant="flush">
           {contacts.map(contact => (
             <ListGroup.Item key = {contact.id}>
                 {contact.name}
