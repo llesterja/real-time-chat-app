@@ -9,9 +9,6 @@ export default function Conversations() {
     if (!conversations) {
       return null; // or render some loading indicator or default content
     }
-  
-    console.log("Conversations")
-    console.log(conversations)
 
   return (
     <ListGroup variant="flush">

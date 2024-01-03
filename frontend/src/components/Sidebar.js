@@ -29,12 +29,10 @@ export default function Sidebar({ id }) {
                     </Nav.Item>
                 </Nav>
 
-                <Tab.Content className='border-right overflow-auto flex-grow-1'>
+                <Tab.Content className="border-right overflow-auto flex-grow-1">
                     <Tab.Pane eventKey={CONVERSATIONS_KEY}>
                         <Conversations />
                     </Tab.Pane>
-                </Tab.Content>
-                <Tab.Content>
                     <Tab.Pane eventKey={CONTACTS_KEY}>
                         <Contacts />
                     </Tab.Pane>
