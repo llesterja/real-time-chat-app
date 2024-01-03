@@ -26,27 +26,20 @@ routers.forEach((router) => app.use('/', router.router));
 
 const PORT = process.env.PORT || 8080;
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  const id = socket.handshake.query.id;
-  console.log(id);
-  socket.join(id);
-  
-  socket.on('send-message',({recipients, text})=>{
+io.on('connection', socket => {
+  const id = socket.handshake.query.id
+  socket.join(id)
 
-    recipients.forEach(recipient=>{
-      const newRecipients = recipients.filter(r=>r!==recipient);
-      newRecipients.push(id);
-      console.log(newRecipients, id, text);
-      socket.broadcast.to(recipient).emit('receive-message',{
-        recipients:newRecipients, sender:id,text
+  socket.on('send-message', ({ recipients, text }) => {
+    recipients.forEach(recipient => {
+      const newRecipients = recipients.filter(r => r !== recipient)
+      newRecipients.push(id)
+      socket.broadcast.to(recipient).emit('receive-message', {
+        recipients: newRecipients, sender: id, text
       })
     })
   })
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
+})
 
 http.listen(PORT,'0.0.0.0',()=>{
   console.log(`🚀 App listening on the port ${PORT}`);
