@@ -28,6 +28,21 @@ const PORT = process.env.PORT || 8080;
 
 io.on('connection', (socket) => {
   console.log('a user connected');
+  const id = socket.handshake.query.id;
+  console.log(id);
+  socket.join(id);
+  
+  socket.on('send-message',({recipients, text})=>{
+
+    recipients.forEach(recipient=>{
+      const newRecipients = recipients.filter(r=>r!==recipient);
+      newRecipients.push(id);
+      console.log(newRecipients, id, text);
+      socket.broadcast.to(recipient).emit('receive-message',{
+        recipients:newRecipients, sender:id,text
+      })
+    })
+  })
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
