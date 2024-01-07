@@ -8,6 +8,8 @@ const UserRouter = require('./src/routers/users.route');
 const ChatroomRouter = require('./src/routers/chatrooms.route');
 const MessageRouter = require('./src/routers/messages.route');
 
+const db = require('./src/db/models/index');
+
 const app = express();
 const http = createServer(app);
 const io = new Server(http,{
@@ -29,7 +31,7 @@ const PORT = process.env.PORT || 8080;
 io.on('connection', socket => {
   const id = socket.handshake.query.id
   socket.join(id)
-
+  console.log("user id:",id," has logged in!")
   socket.on('send-message', ({ recipients, text }) => {
     recipients.forEach(recipient => {
       const newRecipients = recipients.filter(r => r !== recipient)

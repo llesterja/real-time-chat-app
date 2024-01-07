@@ -6,6 +6,21 @@ class UserService {
     this.friendModel = FriendModel;
     this.userModel = UserModel;
   }
+
+  async getIdByUsername(username){
+    try{
+      const user = await this.userModel.findOne({
+        where: {username}
+      })
+      console.log(user)
+      res.status(200).json(user.id)
+    }catch (err){
+      console.log(err);
+      throw new Error(err);
+    }
+
+  }
+
   async listFriendsByUser(userId){
     try{
       const friends = await this.friendModel.findAll({
@@ -25,7 +40,17 @@ class UserService {
     }    
   }
   
-
+  async createUser(username, mobile){
+    try{
+      this.userModel.create({
+        username: username,
+        mobile: mobile,
+      })
+    }catch (err){
+      console.log(err);
+      throw new Error(err);
+    }
+  }
 }
 
 export default UserService;

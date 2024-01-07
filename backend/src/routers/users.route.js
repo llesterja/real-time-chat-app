@@ -15,9 +15,10 @@ class UserRouter {
 
   initializeRoutes = () => {
     this.router.get(`${this.path}/`, this.controller.list);
-    // this.router.get(`${this.path}/:id`, this.controller.get);
+    this.router.get(`${this.path}/login/:username`, this.controller.getIdByUsername);
     this.router.get(`${this.path}/friends/:userId`, this.controller.listAllFriends);
-    // this.router.post(`${this.path}/`, this.controller.add);
+    this.router.post(`${this.path}/login`, this.controller.createUser);
+    this.router.post(`${this.path}/friends`, this.controller.createFriend);
     // this.router.put(`${this.path}/:id`, this.controller.edit);
     // this.router.delete(`${this.path}/:id`, this.controller.delete);
   };
