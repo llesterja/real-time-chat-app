@@ -1,17 +1,17 @@
 import Login from './Login'
-import React from 'react'
-import useLocalStorage from '../hooks/useLocalStorage';
+import React, {useState} from 'react'
+// import useLocalStorage from '../hooks/useLocalStorage';
 import Dashboard from './Dashboard';
 import { ContactsProvider } from '../contexts/ContactsProvider';
 import { ConversationsProvider } from '../contexts/ConversationsProvider';
 import { SocketProvider } from '../contexts/SocketProvider';
 
 function App() {
-  const [id, setId] = useLocalStorage('id')
+  const [id, setId] = useState();
 
   const dashboard = (
     <SocketProvider id = {id}>
-      <ContactsProvider>
+      <ContactsProvider id = {id}>
         <ConversationsProvider id={id}>
           <Dashboard id={id}/>
         </ConversationsProvider>        
