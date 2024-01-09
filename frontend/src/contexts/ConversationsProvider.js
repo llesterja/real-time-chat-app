@@ -2,6 +2,7 @@ import React, {useContext, useState, useEffect, useCallback} from 'react'
 import useLocalStorage from '../hooks/useLocalStorage'
 import { useContacts } from './ContactsProvider';
 import { useSocket } from './SocketProvider';
+import axios from 'axios';
 
 const ConversationsContext = React.createContext()
 
@@ -12,7 +13,7 @@ export function useConversations() {
 
 export function ConversationsProvider({id, children}) {
   // create a state
-  const [conversations, setConversations] = useLocalStorage('conversations', [])
+  const [conversations, setConversations] = useState([]);
   const [selectedConversationIndex, setSelectedConversationIndex] = useState(0)
   const { contacts } = useContacts()
   const socket = useSocket();
@@ -24,10 +25,10 @@ export function ConversationsProvider({id, children}) {
     })
   }
 
-  const addMessageToConversation = useCallback(({ recipients, text, sender }) => {
+  const addMessageToConversation = useCallback(({ recipients, messageBody, sender }) => {
     setConversations(prevConversations => {
       let madeChange = false
-      const newMessage = { sender, text }
+      const newMessage = { sender, messageBody }
       const newConversations = prevConversations.map(conversation => {
         if (arrayEquality(conversation.recipients, recipients)) {
           madeChange = true
@@ -51,18 +52,65 @@ export function ConversationsProvider({id, children}) {
     })
   }, [setConversations])
 
-  useEffect(() => {
-    if (socket == null) return
+  const getConversations = async () => {
+    try{
+      const response = await Promise.all([
+        axios.get(`http://localhost:8080/messages/userId/v2/${id}`),
+        axios.get(`http://localhost:8080/chatrooms/v2/${id}`)        
+      ])
+      const messages=response[0].data;
+      const chatrooms =response[1].data;
+      console.log("chatrooms",chatrooms)
+      let conversationList = [{
+        chatroomName:[],
+        recipients:[],
+        messages:[]
+      }];
 
-    socket.on('receive-message', addMessageToConversation)
+      chatrooms.map((chatroom,index)=>{
+        if (index >= conversationList.length){
+          conversationList[index] = {
+            chatroomName:[],
+            recipients:[],
+            messages:[]
+          }
+        }
+        if (chatroom.chatroom.isGroup){
+          conversationList[index].chatroomName = {id:chatroom.chatroom.id,name:chatroom.chatroom.chatroomName};
+        } else {
+          const extractedId = chatroom.chatroom.users.filter(user => user.id !== chatroom.userId);
+          const contact = contacts.find(contact => {
+            return contact.id === extractedId[0].id
+          })
+          conversationList[index].chatroomName = {id:chatroom.chatroom.id,name:contact.name};
+        }
+
+        chatroom.chatroom.users.map((user)=>{
+          return conversationList[index].recipients.push(user.id)
+        });
+        let room = messages.find(message => message.chatroom.id === chatroom.chatroom.id);
+        conversationList[index].messages = room.chatroom.messages.map((message)=>{
+          return {"sender":message.userId,"messageBody":message.messageBody}
+        });
+      })
+      setConversations(conversationList);
+    }catch(err){
+      console.log(err);
+    }
+  }
+  useEffect(() => {
+    getConversations();
+    if (socket == null) return;
+
+    socket.on('receive-message', addMessageToConversation);
 
     return () => socket.off('receive-message')
   }, [socket, addMessageToConversation])
 
-  function sendMessage(recipients, text) {
-    socket.emit('send-message', { recipients, text })
+  function sendMessage(recipients, messageBody) {
+    socket.emit('send-message', { recipients, messageBody })
 
-    addMessageToConversation({ recipients, text, sender: id })
+    addMessageToConversation({ recipients, messageBody, sender: id })
   }
 
 
@@ -74,6 +122,7 @@ export function ConversationsProvider({id, children}) {
       const name = (contact && contact.name) || recipient
       return { id: recipient, name }
     })
+
 
     const messages = conversation.messages.map(message => {
       const contact = contacts.find(contact => {

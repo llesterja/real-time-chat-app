@@ -19,7 +19,7 @@ export default function Conversations() {
           onClick={() => selectConversationIndex(index)}
           active={conversation.selected}
         >
-          {conversation.recipients.map(r => r.name).join(',')}
+          {conversation.chatroomName.name}
       </ListGroup.Item>
     ))}
   </ListGroup>
