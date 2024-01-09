@@ -13,17 +13,40 @@ class ChatroomController{
     console.log(userId);
     try{
       const rooms = await this.db.chatrooms.findAll({
+        where: {'$users.id$': userId},
         include:[
           {
             model: this.db.users,
             through:{
               model:this.db.userChatrooms,
-              where:{userId:userId}
             }
           }
-        ]
-      });
+        ],
 
+      });
+      res.status(200).json(rooms);
+    }catch (err) {
+      console.error(err);
+      throw new Error(err);
+    }    
+  }
+
+  listChatByUser2 = async(req,res)=>{
+    const {userId} = req.params;
+    console.log(userId);
+    try{
+      const rooms = await this.db.userChatrooms.findAll({
+        where: {userId},
+        include:[
+          {
+            model: this.db.chatrooms,
+            include:[
+              {model:this.db.users}
+            ]
+          }
+        ],
+
+      });
       res.status(200).json(rooms);
     }catch (err) {
       console.error(err);
